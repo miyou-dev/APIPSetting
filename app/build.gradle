@@ -8,10 +8,10 @@ android {
 
     defaultConfig {
         applicationId "com.miyou.apIpSetting"
-        minSdk 30
+        minSdk 29
         targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
     }
 
     buildTypes {

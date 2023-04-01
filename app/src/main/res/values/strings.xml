@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">热点IP设置</string>
+    <string name="github">项目Github地址</string>
 </resources>
