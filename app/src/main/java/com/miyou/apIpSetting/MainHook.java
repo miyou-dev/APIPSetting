@@ -4,7 +4,6 @@ import android.net.LinkAddress;
 import android.os.Build;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -60,22 +59,16 @@ public class MainHook implements IXposedHookLoadPackage {
     }
 
     private XC_MethodHook methodHook() {
-
-        try {
-            Constructor<?> constructor = LinkAddress.class.getDeclaredConstructor(String.class);
-            final Object mLinkAddress = constructor.newInstance(WIFI_HOST_IFACE_ADDR + "/" + WIFI_HOST_IFACE_PREFIX_LENGTH);
-            return new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    super.beforeHookedMethod(param);
-                    if (StackUtils.isCallingFrom(className, "configureIPv4")) {
-                        param.setResult(mLinkAddress);
-                    }
+        return new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                Constructor<?> constructor = LinkAddress.class.getDeclaredConstructor(String.class);
+                final Object mLinkAddress = constructor.newInstance(WIFI_HOST_IFACE_ADDR + "/" + WIFI_HOST_IFACE_PREFIX_LENGTH);
+                if (StackUtils.isCallingFrom(className, "configureIPv4")) {
+                    param.setResult(mLinkAddress);
                 }
-            };
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
-            XposedBridge.log("IP 设置 getXc_methodHook 错误 ");
-            return null;
-        }
+            }
+        };
     }
 }
